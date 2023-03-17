@@ -5,13 +5,13 @@
 SimpleObject3D::SimpleObject3D():
     m_indexBuffer(QOpenGLBuffer::IndexBuffer), m_texture(0)
 {
-
 }
 
 
 SimpleObject3D::SimpleObject3D(const QVector<VertexData> &vertData,const QVector<GLuint> &indexes, const QImage &texture ):
     m_indexBuffer(QOpenGLBuffer::IndexBuffer), m_texture(0)
 {
+
     Init(vertData, indexes, texture);
 }
 
@@ -37,7 +37,6 @@ void SimpleObject3D::Init(const QVector<VertexData> &vertData, const QVector<GLu
         m_texture = 0;
     }
 
-
     m_vertexBuffer.create();
     m_vertexBuffer.bind();
     m_vertexBuffer.allocate(vertData.constData(),vertData.size() * sizeof(VertexData));
@@ -61,6 +60,54 @@ void SimpleObject3D::Init(const QVector<VertexData> &vertData, const QVector<GLu
     m_modelMatrix.setToIdentity();
 }
 
+SimpleObject3D::SimpleObject3D( float width, QImage texture):m_indexBuffer(QOpenGLBuffer::IndexBuffer), m_texture(0)
+{
+    float width_div_2 = width / 2.0f;
+    QVector<VertexData> vertexes;
+    vertexes.append(VertexData(QVector3D(-width_div_2, width_div_2, width_div_2),QVector2D(0.0,1.0),QVector3D(0.0,0.0,1.0)));
+    vertexes.append(VertexData(QVector3D(-width_div_2,-width_div_2, width_div_2),QVector2D(0.0,0.0),QVector3D(0.0,0.0,1.0)));
+    vertexes.append(VertexData(QVector3D( width_div_2, width_div_2, width_div_2),QVector2D(1.0,1.0),QVector3D(0.0,0.0,1.0)));
+    vertexes.append(VertexData(QVector3D( width_div_2,-width_div_2, width_div_2),QVector2D(1.0,0.0),QVector3D(0.0,0.0,1.0)));
+
+    vertexes.append(VertexData(QVector3D( width_div_2, width_div_2, width_div_2),QVector2D(0.0,1.0),QVector3D(1.0,0.0,0.0)));
+    vertexes.append(VertexData(QVector3D( width_div_2,-width_div_2, width_div_2),QVector2D(0.0,0.0),QVector3D(1.0,0.0,0.0)));
+    vertexes.append(VertexData(QVector3D( width_div_2, width_div_2,-width_div_2),QVector2D(1.0,1.0),QVector3D(1.0,0.0,0.0)));
+    vertexes.append(VertexData(QVector3D( width_div_2,-width_div_2,-width_div_2),QVector2D(1.0,0.0),QVector3D(1.0,0.0,0.0)));
+
+    vertexes.append(VertexData(QVector3D( width_div_2, width_div_2, width_div_2),QVector2D(0.0,1.0),QVector3D(0.0,1.0,0.0)));
+    vertexes.append(VertexData(QVector3D( width_div_2, width_div_2,-width_div_2),QVector2D(0.0,0.0),QVector3D(0.0,1.0,0.0)));
+    vertexes.append(VertexData(QVector3D(-width_div_2, width_div_2, width_div_2),QVector2D(1.0,1.0),QVector3D(0.0,1.0,0.0)));
+    vertexes.append(VertexData(QVector3D(-width_div_2, width_div_2,-width_div_2),QVector2D(1.0,0.0),QVector3D(0.0,1.0,0.0)));
+
+    vertexes.append(VertexData(QVector3D( width_div_2, width_div_2,-width_div_2),QVector2D(0.0,1.0),QVector3D(0.0,0.0,-1.0)));
+    vertexes.append(VertexData(QVector3D( width_div_2,-width_div_2,-width_div_2),QVector2D(0.0,0.0),QVector3D(0.0,0.0,-1.0)));
+    vertexes.append(VertexData(QVector3D(-width_div_2, width_div_2,-width_div_2),QVector2D(1.0,1.0),QVector3D(0.0,0.0,-1.0)));
+    vertexes.append(VertexData(QVector3D(-width_div_2,-width_div_2,-width_div_2),QVector2D(1.0,0.0),QVector3D(0.0,0.0,-1.0)));
+
+    vertexes.append(VertexData(QVector3D(-width_div_2, width_div_2, width_div_2),QVector2D(0.0,1.0),QVector3D(-1.0,0.0,0.0)));
+    vertexes.append(VertexData(QVector3D(-width_div_2, width_div_2,-width_div_2),QVector2D(0.0,0.0),QVector3D(-1.0,0.0,0.0)));
+    vertexes.append(VertexData(QVector3D(-width_div_2,-width_div_2, width_div_2),QVector2D(1.0,1.0),QVector3D(-1.0,0.0,0.0)));
+    vertexes.append(VertexData(QVector3D(-width_div_2,-width_div_2,-width_div_2),QVector2D(1.0,0.0),QVector3D(-1.0,0.0,0.0)));
+
+    vertexes.append(VertexData(QVector3D(-width_div_2,-width_div_2, width_div_2),QVector2D(0.0,1.0),QVector3D(0.0,-1.0,0.0)));
+    vertexes.append(VertexData(QVector3D(-width_div_2,-width_div_2,-width_div_2),QVector2D(0.0,0.0),QVector3D(0.0,-1.0,0.0)));
+    vertexes.append(VertexData(QVector3D( width_div_2,-width_div_2, width_div_2),QVector2D(1.0,1.0),QVector3D(0.0,-1.0,0.0)));
+    vertexes.append(VertexData(QVector3D( width_div_2,-width_div_2,-width_div_2),QVector2D(1.0,0.0),QVector3D(0.0,-1.0,0.0)));
+
+    QVector<GLuint> indexes;
+
+    for(int i = 0; i < 24; i += 4)
+    {
+        indexes.append(i + 0);
+        indexes.append(i + 1);
+        indexes.append(i + 2);
+        indexes.append(i + 2);
+        indexes.append(i + 1);
+        indexes.append(i + 3);
+    }
+
+    Init(vertexes,indexes,texture);
+}
 void SimpleObject3D::draw(QOpenGLShaderProgram *program, QOpenGLFunctions *functions)
 {
     if(!m_vertexBuffer.isCreated() || !m_indexBuffer.isCreated()) return;

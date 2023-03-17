@@ -25,9 +25,16 @@ void Widget::initializeGL()
     glEnable(GL_CULL_FACE);                 //отключение отрисовки внутренних граней
 
     initShaders();
-    initCube(1.0f,QImage(":/cube2.png"));
-    m_objects[0]->translate(QVector3D(-1.2,0.0,0.0));
-    initCube(1.0f,QImage(":/cube.png"));
+
+    for(int i = 0; i < 2; ++i)
+    {
+        for (int j = 0; j < 2; ++j)
+        {
+            initCube(1.0f,QImage(":/cube2.png"));
+            m_objects[i*2+j]->translate(QVector3D(-1.2*i,-1.2*j,0.0));
+        }
+    }
+
 }
 
 /*Обычно в этой функции описывается матрица проекции,
@@ -83,16 +90,16 @@ void Widget::mousePressEvent(QMouseEvent *event)
     {
         m_mousePosition = QVector2D(event->localPos());
     }
+
+    //вызов функции выделения
+    if(event->buttons() != Qt::LeftButton)
+        std::cout<<selectObject(event->localPos().x(),event->localPos().y(),m_objects) << std::endl;
     event->accept();
 }
 
 void Widget::mouseMoveEvent(QMouseEvent *event)
 {
-    if(event->buttons() != Qt::LeftButton)
-    {
-        std::cout<<selectObject(event->localPos().x(),event->localPos().y(),m_objects) << std::endl;
-        return;
-    }
+    if(event->buttons() != Qt::LeftButton) return;
     QVector2D diff = QVector2D(event->localPos()) - m_mousePosition;
     m_mousePosition = QVector2D(event->localPos());
 
@@ -135,51 +142,8 @@ void Widget::initShaders()
 
 void Widget::initCube(float width, QImage texture)
 {
-    float width_div_2 = width / 2.0f;
-    QVector<VertexData> vertexes;
-    vertexes.append(VertexData(QVector3D(-width_div_2, width_div_2, width_div_2),QVector2D(0.0,1.0),QVector3D(0.0,0.0,1.0)));
-    vertexes.append(VertexData(QVector3D(-width_div_2,-width_div_2, width_div_2),QVector2D(0.0,0.0),QVector3D(0.0,0.0,1.0)));
-    vertexes.append(VertexData(QVector3D( width_div_2, width_div_2, width_div_2),QVector2D(1.0,1.0),QVector3D(0.0,0.0,1.0)));
-    vertexes.append(VertexData(QVector3D( width_div_2,-width_div_2, width_div_2),QVector2D(1.0,0.0),QVector3D(0.0,0.0,1.0)));
-
-    vertexes.append(VertexData(QVector3D( width_div_2, width_div_2, width_div_2),QVector2D(0.0,1.0),QVector3D(1.0,0.0,0.0)));
-    vertexes.append(VertexData(QVector3D( width_div_2,-width_div_2, width_div_2),QVector2D(0.0,0.0),QVector3D(1.0,0.0,0.0)));
-    vertexes.append(VertexData(QVector3D( width_div_2, width_div_2,-width_div_2),QVector2D(1.0,1.0),QVector3D(1.0,0.0,0.0)));
-    vertexes.append(VertexData(QVector3D( width_div_2,-width_div_2,-width_div_2),QVector2D(1.0,0.0),QVector3D(1.0,0.0,0.0)));
-
-    vertexes.append(VertexData(QVector3D( width_div_2, width_div_2, width_div_2),QVector2D(0.0,1.0),QVector3D(0.0,1.0,0.0)));
-    vertexes.append(VertexData(QVector3D( width_div_2, width_div_2,-width_div_2),QVector2D(0.0,0.0),QVector3D(0.0,1.0,0.0)));
-    vertexes.append(VertexData(QVector3D(-width_div_2, width_div_2, width_div_2),QVector2D(1.0,1.0),QVector3D(0.0,1.0,0.0)));
-    vertexes.append(VertexData(QVector3D(-width_div_2, width_div_2,-width_div_2),QVector2D(1.0,0.0),QVector3D(0.0,1.0,0.0)));
-
-    vertexes.append(VertexData(QVector3D( width_div_2, width_div_2,-width_div_2),QVector2D(0.0,1.0),QVector3D(0.0,0.0,-1.0)));
-    vertexes.append(VertexData(QVector3D( width_div_2,-width_div_2,-width_div_2),QVector2D(0.0,0.0),QVector3D(0.0,0.0,-1.0)));
-    vertexes.append(VertexData(QVector3D(-width_div_2, width_div_2,-width_div_2),QVector2D(1.0,1.0),QVector3D(0.0,0.0,-1.0)));
-    vertexes.append(VertexData(QVector3D(-width_div_2,-width_div_2,-width_div_2),QVector2D(1.0,0.0),QVector3D(0.0,0.0,-1.0)));
-
-    vertexes.append(VertexData(QVector3D(-width_div_2, width_div_2, width_div_2),QVector2D(0.0,1.0),QVector3D(-1.0,0.0,0.0)));
-    vertexes.append(VertexData(QVector3D(-width_div_2, width_div_2,-width_div_2),QVector2D(0.0,0.0),QVector3D(-1.0,0.0,0.0)));
-    vertexes.append(VertexData(QVector3D(-width_div_2,-width_div_2, width_div_2),QVector2D(1.0,1.0),QVector3D(-1.0,0.0,0.0)));
-    vertexes.append(VertexData(QVector3D(-width_div_2,-width_div_2,-width_div_2),QVector2D(1.0,0.0),QVector3D(-1.0,0.0,0.0)));
-
-    vertexes.append(VertexData(QVector3D(-width_div_2,-width_div_2, width_div_2),QVector2D(0.0,1.0),QVector3D(0.0,-1.0,0.0)));
-    vertexes.append(VertexData(QVector3D(-width_div_2,-width_div_2,-width_div_2),QVector2D(0.0,0.0),QVector3D(0.0,-1.0,0.0)));
-    vertexes.append(VertexData(QVector3D( width_div_2,-width_div_2, width_div_2),QVector2D(1.0,1.0),QVector3D(0.0,-1.0,0.0)));
-    vertexes.append(VertexData(QVector3D( width_div_2,-width_div_2,-width_div_2),QVector2D(1.0,0.0),QVector3D(0.0,-1.0,0.0)));
-
-    QVector<GLuint> indexes;
-
-    for(int i = 0; i < 24; i += 4)
-    {
-        indexes.append(i + 0);
-        indexes.append(i + 1);
-        indexes.append(i + 2);
-        indexes.append(i + 2);
-        indexes.append(i + 1);
-        indexes.append(i + 3);
-    }
-
-    m_objects.append(new SimpleObject3D(vertexes,indexes,texture));
+    //добавление вершин вынесено в конструктор SimpleObject3D
+    m_objects.append(new SimpleObject3D(width,texture));
 }
 
 int Widget::selectObject(int x, int y, QVector<SimpleObject3D *> &objs)
@@ -190,10 +154,13 @@ int Widget::selectObject(int x, int y, QVector<SimpleObject3D *> &objs)
 
     glEnable(GL_DEPTH_TEST);
 
+    /*Подготовка матриц для шейдеров*/
     m_programSelect.bind();
 
     m_programSelect.setUniformValue("u_projectionMatrix", m_projectionMatrix);
     m_programSelect.setUniformValue("u_viewMatrix",viewMatrix);
+
+    //отрисовка картинки с массивом объектов
     for(int i = 0; i < objs.size();i++)
     {
         m_programSelect.setUniformValue("u_code",(float)(i+1));
@@ -202,10 +169,12 @@ int Widget::selectObject(int x, int y, QVector<SimpleObject3D *> &objs)
 
     m_programSelect.release();
 
+    //устанавливаем откуда (из какого вьюпорта) будем считывать пиксель
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
     unsigned char res[4];
 
+    //считываем пиксель и записываем в res
     glReadPixels(x, viewport[3] - y,1,1, GL_RGBA, GL_UNSIGNED_BYTE, &res);
 
 

@@ -15,7 +15,7 @@ SOURCES += \
 
 HEADERS += \
     simpleobject3d.h \
-    transformation.h \
+    #transformation.h \
     widget.h
 
 # Default rules for deployment.

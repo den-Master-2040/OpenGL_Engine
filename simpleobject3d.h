@@ -29,10 +29,12 @@ class SimpleObject3D
 public:
     SimpleObject3D();
     SimpleObject3D(const QVector<VertexData> &vertData,const QVector<GLuint> &indexes, const QImage &texture );
+    SimpleObject3D( float width, QImage texture );
     ~SimpleObject3D();
     void Init(const QVector<VertexData> &vertData,const QVector<GLuint> &indexes, const QImage &texture);
     void draw(QOpenGLShaderProgram *program, QOpenGLFunctions * functions);
     void translate(const QVector3D translatevector);
+
     /*void rotate(const QQuaternion &r);
     void scale(const float &s);
     void transform(const QMatrix4x4 &g);
